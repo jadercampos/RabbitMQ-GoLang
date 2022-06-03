@@ -4,18 +4,27 @@ import (
 	"log"
 
 	"github.com/streadway/amqp"
+
+	"github.com/jadercampos/RabbitMQ-GoLang/rabbitUtils"
 )
 
 func Sender(queueName string, body string) {
-	conn := getConnection()
+	conn := rabbitUtils.GetConnection()
 	defer conn.Close()
 
-	ch := getChannel(conn)
+	ch := rabbitUtils.GetChannel(conn)
 	defer ch.Close()
 
-	q, err := declareQueue(ch, queueName)
+	q, err := ch.QueueDeclare(
+		queueName, // name
+		false,     // durable
+		false,     // delete when unused
+		false,     // exclusive
+		false,     // no-wait
+		nil,       // arguments
+	)
 
-	failOnError(err, "Failed to declare a queue")
+	rabbitUtils.FailOnError(err, "Failed to declare a queue")
 
 	err = ch.Publish(
 		"",     // exchange
@@ -27,6 +36,6 @@ func Sender(queueName string, body string) {
 			Body:        []byte(body),
 		})
 
-	failOnError(err, "Failed to publish a message")
+	rabbitUtils.FailOnError(err, "Failed to publish a message")
 	log.Printf(" [x] Sent %s\n", body)
 }
