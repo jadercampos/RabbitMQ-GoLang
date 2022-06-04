@@ -1,0 +1,4 @@
+github.com/jadercampos/RabbitMQ-GoLang v0.0.0-20220603045309-c5140824e359 h1:TzgXsxscPCfQWS0BlszxMRkD9CeBEqJvaZKZtIV2CTM=
+github.com/jadercampos/RabbitMQ-GoLang v0.0.0-20220603045309-c5140824e359/go.mod h1:X5zTkHT77tui7cBpf0ktgeG4D4LAKhS3fDPILv9mCas=
+github.com/streadway/amqp v1.0.0 h1:kuuDrUJFZL1QYL9hUNuCxNObNzB0bV/ZG5jV3RWAQgo=
+github.com/streadway/amqp v1.0.0/go.mod h1:AZpEONHx3DKn8O/DFsRAY58/XVQiIPMTMB1SddzLXVw=

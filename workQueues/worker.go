@@ -10,10 +10,10 @@ import (
 
 func ConsomeORole() {
 
-	conn := rabbitUtils.GetConnection()
+	conn, _ := rabbitUtils.GetConnection()
 	defer conn.Close()
 
-	ch := rabbitUtils.GetChannel(conn)
+	ch, _ := rabbitUtils.GetChannel(conn)
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
