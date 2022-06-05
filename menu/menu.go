@@ -8,6 +8,7 @@ import (
 	"github.com/jadercampos/RabbitMQ-GoLang/hello"
 	"github.com/jadercampos/RabbitMQ-GoLang/pubSub"
 	"github.com/jadercampos/RabbitMQ-GoLang/rabbitUtils"
+	remoteprocedurecall "github.com/jadercampos/RabbitMQ-GoLang/remoteProcedureCall"
 	"github.com/jadercampos/RabbitMQ-GoLang/routing"
 	"github.com/jadercampos/RabbitMQ-GoLang/topics"
 	"github.com/jadercampos/RabbitMQ-GoLang/workQueues"
@@ -40,6 +41,10 @@ func ShowMenu() {
 	fmt.Println("\n> Topics:")
 	fmt.Println("9- Emitopico")
 	fmt.Println("10- Recetopico")
+
+	fmt.Println("\n> RPC:")
+	fmt.Println("11- Server")
+	fmt.Println("12- Client")
 
 	fmt.Println("\n0- Sair do Programa")
 
@@ -77,6 +82,16 @@ func ReadCommand() {
 		topics.EmiteTopico("logs_topic", "topic")
 	case 10:
 		topics.ReceiveTopico("logs_topic", "topic", rabbitUtils.ScanUserInputWithoutValidation("Digita aí:"))
+	case 11:
+		remoteprocedurecall.Servidor()
+	case 12:
+		for {
+			fmt.Print("\nDigite um número: ")
+			fmt.Scan(&selectedCommand)
+			fmt.Println("\nO número digitado foi: ", selectedCommand)
+			remoteprocedurecall.Cliente(selectedCommand)
+		}
+
 	case 0:
 		fmt.Println("\nSaindo do programa")
 		os.Exit(0)
