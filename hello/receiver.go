@@ -40,7 +40,7 @@ func Receiver(queueName string) {
 
 	go func() {
 		for d := range msgs {
-			log.Printf("Received a message: %s", d.Body)
+			log.Printf("\n Received a message: %s", d.Body)
 		}
 	}()
 

@@ -24,14 +24,14 @@ func ConsomeORole(queuName string) {
 		false,    // no-wait
 		nil,      // arguments
 	)
-	rabbitUtils.FailOnError(err, "Failed to declare a queue")
+	rabbitUtils.FailOnError(err, rabbitUtils.DECLARE_QUEUE_ERROR_MSG)
 
 	err = ch.Qos(
 		1,     // prefetch count
 		0,     // prefetch size
 		false, // global
 	)
-	rabbitUtils.FailOnError(err, "Failed to set QoS")
+	rabbitUtils.FailOnError(err, rabbitUtils.SET_QOS_ERROR_MSG)
 
 	msgs, err := ch.Consume(
 		q.Name, // queue
@@ -42,7 +42,7 @@ func ConsomeORole(queuName string) {
 		false,  // no-wait
 		nil,    // args
 	)
-	rabbitUtils.FailOnError(err, "Failed to register a consumer")
+	rabbitUtils.FailOnError(err, rabbitUtils.REGISTER_CONSUMER_ERROR_MSG)
 
 	forever := make(chan bool)
 
@@ -57,6 +57,6 @@ func ConsomeORole(queuName string) {
 		}
 	}()
 
-	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
+	log.Printf("\n [*] Waiting for messages. To exit press CTRL+C")
 	<-forever
 }

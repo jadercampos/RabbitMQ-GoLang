@@ -40,7 +40,7 @@ func EmitLog(exchangelName string, channelType string) {
 			})
 		rabbitUtils.FailOnError(err, rabbitUtils.PUBLISH_ERROR_MSG)
 
-		log.Printf(" [x] Sent %s", body)
+		log.Printf("\n [x] Sent %s", body)
 
 		time.Sleep(2 * time.Second)
 	}

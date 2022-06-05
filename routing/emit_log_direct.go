@@ -41,12 +41,12 @@ func EmitaORole(exchangeName string, exchangeType string) {
 			})
 		rabbitUtils.FailOnError(err, rabbitUtils.PUBLISH_ERROR_MSG)
 
-		log.Printf(" [x] Sent %s", body)
+		log.Printf("\n [x] Sent %s", body)
 		time.Sleep(2 * time.Second)
 	}
 }
 func getMsgAndSeverity() (string, string) {
-	msgs := []string{"O gato subiu no telhado", "Mudaram as estações", "Nada mudou", "Mas eu sei que alguma coisa aconteceu", "Tá tudo assim tão diferente"}
+	msgs := rabbitUtils.BODY_MSGS
 	severities := []string{"info", "warning", "error"}
 	randomIndex := rand.Intn(len(msgs))
 	msg := msgs[randomIndex]

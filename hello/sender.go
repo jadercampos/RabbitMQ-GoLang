@@ -37,5 +37,5 @@ func Sender(queueName string, body string) {
 		})
 
 	rabbitUtils.FailOnError(err, rabbitUtils.PUBLISH_ERROR_MSG)
-	log.Printf(" [x] Sent %s\n", body)
+	log.Printf("\n [x] Sent %s\n", body)
 }

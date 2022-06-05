@@ -1,4 +1,4 @@
-package routing
+package topics
 
 import (
 	"log"
@@ -6,7 +6,7 @@ import (
 	"github.com/jadercampos/RabbitMQ-GoLang/rabbitUtils"
 )
 
-func RecebaORole(exchangeName string, exchangeType string, severities []string) {
+func ReceiveTopico(exchangeName string, exchangeType string, routingKeys string) {
 	conn, err := rabbitUtils.GetConnection()
 	defer conn.Close()
 
@@ -34,17 +34,14 @@ func RecebaORole(exchangeName string, exchangeType string, severities []string) 
 	)
 	rabbitUtils.FailOnError(err, rabbitUtils.DECLARE_QUEUE_ERROR_MSG)
 
-	for _, s := range severities {
-		log.Printf("\nBinding queue %s to exchange %s with routing key %s",
-			q.Name, exchangeName, s)
-		err = ch.QueueBind(
-			q.Name,       // queue name
-			s,            // routing key
-			exchangeName, // exchange
-			false,
-			nil)
-		rabbitUtils.FailOnError(err, rabbitUtils.BIND_QUEUE_ERROR_MSG)
-	}
+	log.Printf("\nBinding queue %s to exchange %s with routing key %s", q.Name, "logs_topic", routingKeys)
+	err = ch.QueueBind(
+		q.Name,       // queue name
+		routingKeys,  // routing key
+		exchangeName, // exchange
+		false,
+		nil)
+	rabbitUtils.FailOnError(err, rabbitUtils.BIND_QUEUE_ERROR_MSG)
 
 	msgs, err := ch.Consume(
 		q.Name, // queue

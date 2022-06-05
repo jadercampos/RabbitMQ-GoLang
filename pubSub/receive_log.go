@@ -58,7 +58,7 @@ func ReceiveLog(exchangeName string, exchangeType string) {
 
 	go func() {
 		for d := range msgs {
-			log.Printf(" [x] %s", d.Body)
+			log.Printf("\n [x] %s", d.Body)
 		}
 	}()
 

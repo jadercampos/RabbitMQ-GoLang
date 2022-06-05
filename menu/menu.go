@@ -9,6 +9,7 @@ import (
 	"github.com/jadercampos/RabbitMQ-GoLang/pubSub"
 	"github.com/jadercampos/RabbitMQ-GoLang/rabbitUtils"
 	"github.com/jadercampos/RabbitMQ-GoLang/routing"
+	"github.com/jadercampos/RabbitMQ-GoLang/topics"
 	"github.com/jadercampos/RabbitMQ-GoLang/workQueues"
 )
 
@@ -35,6 +36,10 @@ func ShowMenu() {
 	fmt.Println("\n> Routing:")
 	fmt.Println("7- Emita")
 	fmt.Println("8- Receba")
+
+	fmt.Println("\n> Topics:")
+	fmt.Println("9- Emitopico")
+	fmt.Println("10- Recetopico")
 
 	fmt.Println("\n0- Sair do Programa")
 
@@ -66,8 +71,12 @@ func ReadCommand() {
 		for valido == false {
 			severities, valido = rabbitUtils.ScanUserInput("\nDigite os tipos de logs que deseja obter separados por espaço [info|warning|error|*]: ", []string{"info", "warning", "error"})
 		}
-		fmt.Println("\nExibindo logs do tipo: ", severities, "\n")
+		fmt.Println("\nExibindo logs do tipo: ", severities)
 		routing.RecebaORole("logs_direct", "direct", severities)
+	case 9:
+		topics.EmiteTopico("logs_topic", "topic")
+	case 10:
+		topics.ReceiveTopico("logs_topic", "topic", rabbitUtils.ScanUserInputWithoutValidation("Digita aí:"))
 	case 0:
 		fmt.Println("\nSaindo do programa")
 		os.Exit(0)
@@ -84,7 +93,7 @@ func CleanConsole() {
 }
 
 func BackToMenu() {
-	fmt.Print("Aperte 1 para voltar ao menu ou qualquer outra tecla para sair: ")
+	fmt.Print("\nAperte 1 para voltar ao menu ou qualquer outra tecla para sair: ")
 	fmt.Scan(&selectedCommand)
 	if selectedCommand == 1 {
 		ShowMenu()

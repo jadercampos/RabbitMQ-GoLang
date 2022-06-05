@@ -10,16 +10,19 @@ import (
 	"github.com/streadway/amqp"
 )
 
-const URL_DIAL string = "amqp://admin:admin@localhost:5672/"
-const DECLARE_QUEUE_ERROR_MSG string = "Failed to declare a queue"
-const PUBLISH_ERROR_MSG string = "Failed to publish a message"
-const REGISTER_CONSUMER_ERROR_MSG string = "Failed to register a consumer"
-const CONNECT_ERROR_MSG string = "Failed to connect to RabbitMQ"
-const OPEN_CHANNEL_ERROR_MSG string = "Failed to open a channel"
-const DECLARE_EXCHANGE_ERROR_MSG string = "Failed to declare an exchange"
-const BIND_QUEUE_ERROR_MSG string = "Failed to bind a queue"
-const WAITING_LOGS_MSG string = " [*] Waiting for logs. To exit press CTRL+C"
-const WAITING_MSGS_MSG string = " [*] Waiting for messages. To exit press CTRL+C"
+const URL_DIAL = "amqp://admin:admin@localhost:5672/"
+const DECLARE_QUEUE_ERROR_MSG = "Failed to declare a queue"
+const PUBLISH_ERROR_MSG = "Failed to publish a message"
+const REGISTER_CONSUMER_ERROR_MSG = "Failed to register a consumer"
+const CONNECT_ERROR_MSG = "Failed to connect to RabbitMQ"
+const OPEN_CHANNEL_ERROR_MSG = "Failed to open a channel"
+const DECLARE_EXCHANGE_ERROR_MSG = "Failed to declare an exchange"
+const BIND_QUEUE_ERROR_MSG = "Failed to bind a queue"
+const SET_QOS_ERROR_MSG = "Failed to set QoS"
+const WAITING_LOGS_MSG = "\n [*] Waiting for logs. To exit press CTRL+C"
+const WAITING_MSGS_MSG = "\n [*] Waiting for messages. To exit press CTRL+C"
+
+var BODY_MSGS = []string{"O gato subiu no telhado", "Mudaram as estações", "Nada mudou", "Mas eu sei que alguma coisa aconteceu", "Tá tudo assim tão diferente"}
 
 func GetConnection() (*amqp.Connection, error) {
 	conn, err := amqp.Dial(URL_DIAL)
@@ -59,6 +62,19 @@ func ScanUserInput(msg string, validValues []string) ([]string, bool) {
 		}
 	}
 	return informedValues, valid
+}
+
+func ScanUserInputWithoutValidation(msg string) string {
+	fmt.Print(msg)
+	var typedValue string
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		typedValue = scanner.Text()
+		if typedValue != "" && typedValue != "\n" {
+			break
+		}
+	}
+	return typedValue
 }
 
 func HasSomeValue(validValues []string, informedValues []string) bool {
