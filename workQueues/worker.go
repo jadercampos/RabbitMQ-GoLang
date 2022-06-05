@@ -8,7 +8,7 @@ import (
 	"github.com/jadercampos/RabbitMQ-GoLang/rabbitUtils"
 )
 
-func ConsomeORole() {
+func ConsomeORole(queuName string) {
 
 	conn, _ := rabbitUtils.GetConnection()
 	defer conn.Close()
@@ -17,12 +17,12 @@ func ConsomeORole() {
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
-		"task_queue", // name
-		true,         // durable
-		false,        // delete when unused
-		false,        // exclusive
-		false,        // no-wait
-		nil,          // arguments
+		queuName, // name
+		true,     // durable
+		false,    // delete when unused
+		false,    // exclusive
+		false,    // no-wait
+		nil,      // arguments
 	)
 	rabbitUtils.FailOnError(err, "Failed to declare a queue")
 

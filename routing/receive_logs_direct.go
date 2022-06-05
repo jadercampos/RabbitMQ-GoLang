@@ -1,4 +1,4 @@
-package pubSub
+package routing
 
 import (
 	"log"
@@ -6,7 +6,7 @@ import (
 	"github.com/jadercampos/RabbitMQ-GoLang/rabbitUtils"
 )
 
-func ReceiveLog(exchangeName string, exchangeType string) {
+func RecebaORole(exchangeName string, exchangeType string, severities []string) {
 	conn, err := rabbitUtils.GetConnection()
 	defer conn.Close()
 
@@ -34,22 +34,29 @@ func ReceiveLog(exchangeName string, exchangeType string) {
 	)
 	rabbitUtils.FailOnError(err, rabbitUtils.DECLARE_QUEUE_ERROR_MSG)
 
-	err = ch.QueueBind(
-		q.Name,       // queue name
-		"",           // routing key
-		exchangeName, // exchange
-		false,
-		nil,
-	)
-	rabbitUtils.FailOnError(err, rabbitUtils.BIND_QUEUE_ERROR_MSG)
+	// if len(severities) < 2 {
+	// 	log.Printf("Usage: %s [info] [warning] [error]", os.Args[0])
+	// 	os.Exit(0)
+	// }
+	for _, s := range severities {
+		log.Printf("Binding queue %s to exchange %s with routing key %s",
+			q.Name, exchangeName, s)
+		err = ch.QueueBind(
+			q.Name,       // queue name
+			s,            // routing key
+			exchangeName, // exchange
+			false,
+			nil)
+		rabbitUtils.FailOnError(err, rabbitUtils.BIND_QUEUE_ERROR_MSG)
+	}
 
 	msgs, err := ch.Consume(
 		q.Name, // queue
 		"",     // consumer
-		true,   // auto-ack
+		true,   // auto ack
 		false,  // exclusive
-		false,  // no-local
-		false,  // no-wait
+		false,  // no local
+		false,  // no wait
 		nil,    // args
 	)
 	rabbitUtils.FailOnError(err, rabbitUtils.REGISTER_CONSUMER_ERROR_MSG)

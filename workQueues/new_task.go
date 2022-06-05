@@ -9,7 +9,7 @@ import (
 	"github.com/streadway/amqp"
 )
 
-func PublicaORole() {
+func PublicaORole(queueName string) {
 
 	conn, _ := rabbitUtils.GetConnection()
 	defer conn.Close()
@@ -18,12 +18,12 @@ func PublicaORole() {
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
-		"task_queue", // name
-		true,         // durable
-		false,        // delete when unused
-		false,        // exclusive
-		false,        // no-wait
-		nil,          // arguments
+		queueName, // name
+		true,      // durable
+		false,     // delete when unused
+		false,     // exclusive
+		false,     // no-wait
+		nil,       // arguments
 	)
 	rabbitUtils.FailOnError(err, "Failed to declare a queue")
 	for {

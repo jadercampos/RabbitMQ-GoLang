@@ -22,7 +22,7 @@ func Receiver(queueName string) {
 		nil,       // arguments
 	)
 
-	rabbitUtils.FailOnError(err, "Failed to declare a queue")
+	rabbitUtils.FailOnError(err, rabbitUtils.DECLARE_QUEUE_ERROR_MSG)
 
 	msgs, err := ch.Consume(
 		q.Name, // queue
@@ -34,7 +34,7 @@ func Receiver(queueName string) {
 		nil,    // args
 	)
 
-	rabbitUtils.FailOnError(err, "Failed to register a consumer")
+	rabbitUtils.FailOnError(err, rabbitUtils.REGISTER_CONSUMER_ERROR_MSG)
 
 	var forever chan struct{}
 
@@ -44,6 +44,6 @@ func Receiver(queueName string) {
 		}
 	}()
 
-	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
+	log.Printf(rabbitUtils.WAITING_MSGS_MSG)
 	<-forever
 }

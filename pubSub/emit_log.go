@@ -9,7 +9,7 @@ import (
 	"github.com/streadway/amqp"
 )
 
-func EmitLog() {
+func EmitLog(exchangelName string, channelType string) {
 	conn, err := rabbitUtils.GetConnection()
 	defer conn.Close()
 
@@ -17,28 +17,28 @@ func EmitLog() {
 	defer ch.Close()
 
 	err = ch.ExchangeDeclare(
-		"logs",   // name
-		"fanout", // type
-		true,     // durable
-		false,    // auto-deleted
-		false,    // internal
-		false,    // no-wait
-		nil,      // arguments
+		exchangelName, // name
+		channelType,   // type
+		true,          // durable
+		false,         // auto-deleted
+		false,         // internal
+		false,         // no-wait
+		nil,           // arguments
 	)
-	rabbitUtils.FailOnError(err, "Failed to declare an exchange")
+	rabbitUtils.FailOnError(err, rabbitUtils.DECLARE_EXCHANGE_ERROR_MSG)
 
 	for {
 		body := fmt.Sprintf("%s - %s", "[Mensagem fofinha]", time.Now().Format("02/01/2006 - 15:04:05"))
 		err = ch.Publish(
-			"logs", // exchange
-			"",     // routing key
-			false,  // mandatory
-			false,  // immediate
+			exchangelName, // exchange
+			"",            // routing key
+			false,         // mandatory
+			false,         // immediate
 			amqp.Publishing{
 				ContentType: "text/plain",
 				Body:        []byte(body),
 			})
-		rabbitUtils.FailOnError(err, "Failed to publish a message")
+		rabbitUtils.FailOnError(err, rabbitUtils.PUBLISH_ERROR_MSG)
 
 		log.Printf(" [x] Sent %s", body)
 

@@ -24,7 +24,7 @@ func Sender(queueName string, body string) {
 		nil,       // arguments
 	)
 
-	rabbitUtils.FailOnError(err, "Failed to declare a queue")
+	rabbitUtils.FailOnError(err, rabbitUtils.DECLARE_QUEUE_ERROR_MSG)
 
 	err = ch.Publish(
 		"",     // exchange
@@ -36,6 +36,6 @@ func Sender(queueName string, body string) {
 			Body:        []byte(body),
 		})
 
-	rabbitUtils.FailOnError(err, "Failed to publish a message")
+	rabbitUtils.FailOnError(err, rabbitUtils.PUBLISH_ERROR_MSG)
 	log.Printf(" [x] Sent %s\n", body)
 }
