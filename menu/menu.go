@@ -1,22 +1,20 @@
 package menu
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 	"os/exec"
-	"sort"
-	"strings"
 
 	"github.com/jadercampos/RabbitMQ-GoLang/hello"
 	"github.com/jadercampos/RabbitMQ-GoLang/pubSub"
+	"github.com/jadercampos/RabbitMQ-GoLang/rabbitUtils"
 	"github.com/jadercampos/RabbitMQ-GoLang/routing"
 	"github.com/jadercampos/RabbitMQ-GoLang/workQueues"
 )
 
-var comando int
+var selectedCommand int
 
-func ExibeMenu() {
+func ShowMenu() {
 
 	fmt.Println("<<< Exemplos com RabbitMQ >>>")
 	fmt.Println("***************************************************************")
@@ -40,13 +38,14 @@ func ExibeMenu() {
 
 	fmt.Println("\n0- Sair do Programa")
 
-	LeComando()
+	ReadCommand()
 }
-func LeComando() {
+
+func ReadCommand() {
 	fmt.Print("\nDigite a opção e aperte Enter: ")
-	fmt.Scan(&comando)
-	fmt.Println("\nO comando escolhido foi", comando)
-	switch comando {
+	fmt.Scan(&selectedCommand)
+	fmt.Println("\nO comando escolhido foi", selectedCommand)
+	switch selectedCommand {
 	case 1:
 		hello.Sender("hello", "Oi mundo!")
 	case 2:
@@ -65,7 +64,7 @@ func LeComando() {
 		var severities []string
 		var valido bool
 		for valido == false {
-			severities, valido = scanUserInput("\nDigite os tipos de logs que deseja obter separados por espaço [info|warning|error|*]: ", []string{"info", "warning", "error"})
+			severities, valido = rabbitUtils.ScanUserInput("\nDigite os tipos de logs que deseja obter separados por espaço [info|warning|error|*]: ", []string{"info", "warning", "error"})
 		}
 		fmt.Println("\nExibindo logs do tipo: ", severities, "\n")
 		routing.RecebaORole("logs_direct", "direct", severities)
@@ -74,57 +73,22 @@ func LeComando() {
 		os.Exit(0)
 	default:
 		fmt.Println("\nNão conheço este comando")
-		VoltarAoMenu()
+		BackToMenu()
 	}
-
 }
 
-func LimpaConsole() {
+func CleanConsole() {
 	cmd := exec.Command("clear")
 	cmd.Stdout = os.Stdout
 	cmd.Run()
 }
 
-func VoltarAoMenu() {
+func BackToMenu() {
 	fmt.Print("Aperte 1 para voltar ao menu ou qualquer outra tecla para sair: ")
-	fmt.Scan(&comando)
-	if comando == 1 {
-		ExibeMenu()
+	fmt.Scan(&selectedCommand)
+	if selectedCommand == 1 {
+		ShowMenu()
 	} else {
 		os.Exit(0)
 	}
-}
-
-func scanUserInput(msg string, validValues []string) ([]string, bool) {
-	fmt.Print(msg)
-	scanner := bufio.NewScanner(os.Stdin)
-	var informedValues = validValues
-	valido := true
-	for scanner.Scan() {
-		digitado := scanner.Text()
-		if digitado != "" && digitado != "\n" {
-			informedValues = strings.Fields(digitado)
-			if digitado == "*" {
-				informedValues = validValues
-			}
-			if !temAlgum(validValues, informedValues) {
-				fmt.Println("\nValor informado é inválido: ", informedValues)
-				valido = false
-			}
-			break
-		}
-	}
-	return informedValues, valido
-}
-
-func temAlgum(validValues []string, informedValues []string) bool {
-	var temAlgum bool
-	for _, item := range informedValues {
-		i := sort.SearchStrings(validValues, item)
-		tem := i < len(informedValues) && informedValues[i] == item
-		if tem {
-			temAlgum = true
-		}
-	}
-	return temAlgum
 }

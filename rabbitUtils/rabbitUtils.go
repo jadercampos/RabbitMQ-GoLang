@@ -1,7 +1,11 @@
 package rabbitUtils
 
 import (
+	"bufio"
+	"fmt"
 	"log"
+	"os"
+	"strings"
 
 	"github.com/streadway/amqp"
 )
@@ -33,4 +37,38 @@ func FailOnError(err error, msg string) {
 	if err != nil {
 		log.Panicf("%s: %s", msg, err)
 	}
+}
+
+func ScanUserInput(msg string, validValues []string) ([]string, bool) {
+	fmt.Print(msg)
+	scanner := bufio.NewScanner(os.Stdin)
+	var informedValues = validValues
+	valid := true
+	for scanner.Scan() {
+		typedValue := scanner.Text()
+		if typedValue != "" && typedValue != "\n" {
+			informedValues = strings.Fields(typedValue)
+			if typedValue == "*" {
+				informedValues = validValues
+			}
+			if !HasSomeValue(validValues, informedValues) {
+				fmt.Println("\nValor informado é inválido: ", informedValues)
+				valid = false
+			}
+			break
+		}
+	}
+	return informedValues, valid
+}
+
+func HasSomeValue(validValues []string, informedValues []string) bool {
+	var hasSome bool
+	for _, informedItem := range informedValues {
+		for _, validItem := range validValues {
+			if informedItem == validItem {
+				hasSome = true
+			}
+		}
+	}
+	return hasSome
 }
